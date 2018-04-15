@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-@author: Vincent Roy [D]
+@author: Vincent Roy [*]
 
-This module implements the base class asset that is the superclass of all financial assets
+This module implements the base class asset that is the superclass of all financial assets.
 
 """
 
@@ -13,19 +13,6 @@ from __future__ import division
 import numpy as np
 import pandas as pd
 import datetime
-
-
-import plotly.plotly as py
-import plotly.graph_objs as go
-from plotly.graph_objs import Scatter, Figure, Layout
-from plotly.offline import download_plotlyjs, init_notebook_mode, plot, iplot
-
-
-init_notebook_mode(connected=True)
-
-
-
-
 
 
 class Asset(object):
@@ -43,6 +30,34 @@ class Asset(object):
         - salePrice : (float) unit price of the asset at time of sale
         - volume : (float) number of asset units
         - percentOwnership : (float) percent ownership of the asset
+        - ticker : (string) id of stock on martkets
+        - perfMatrix : (DataFrame) time stamped matrix with the following columns
+                Open - day market open of stock
+                High - day market high of stock
+                Low - day market low of stock
+                Close - day market close of stock
+                Adj Close - day market close adjusted for dividends
+                Volume - day traded volume of stock
+                Market - market value of asset = number of stock * adj close
+                Est Profit - profit with regards to acquisition value of the asset
+                % Est Profit - % porfit of asset
+                RateReturn
+                Time Delta
+                % Return
+                Annual Return
+        - perfVector : (DataFrame) vector (actually a one row dataFrame) with the following attributes based on the last trading day
+                Asset ID
+                Purchase date
+                Purchase price
+                Volume
+                Acquisition
+                Adj Close
+                Market
+                Est Profit
+                % Est Profit
+                Annual Return
+        - annualReturn : (float) based on the simple return
+        
         
     """
 
@@ -62,14 +77,7 @@ class Asset(object):
         self.annualReturn = []
 
 
-
-
-
-    #-------------------------------------------------------------------------------------------------------------------
-    #
-    # Asset performance calculations methods
-    #
-    #-------------------------------------------------------------------------------------------------------------------
+        self.setAssetData()
 
 
     def calcAcquistionValue(self):
@@ -83,32 +91,17 @@ class Asset(object):
         return self.purchasePrice * self.volume
 
 
-    def getLastPrice(self):
-        """
-        Gets the last price of the asset on the last trading day. 
-
-        Args :
-        - none
-
-        Return :
-        - (list) date and value
-        
-        """
-
-        pass
-
-
 
     def getHistoricalPrice(self,startDate,endDate):
         """
-        Gets the historical price at a given date for a unit of the asset. 
+        Gets the historical prices (open, low, high, close, adj close and volume) between a set of dates 
 
         Args :
         - startDate : (string) start date of the extraction (format YY-MM-DD)
         - endDate : (string) end date of the extraction (format YY-MM-DD)
 
         Return :
-            - (Dataframe) 
+            - (DataFrame) open, low, high, close, adj close and volume matrix between a set of dates 
         """
 
         raise NotImplementedError("Should have implemented this")
@@ -119,10 +112,11 @@ class Asset(object):
         """
         Calculates the asset performance matrix composed of the key performance indicators for each of the trading dates
         between the selected start and end dates :
-            - Open, High, Low, Close and volume
+            - Open, High, Low, Close, Adj Close and volume
             - Market value of the asset
             - Estimated profit of the asset
             - % Estimated profit of the asset
+            - Annual return
         
         Args :
         - startDate : (string) start date of the extraction (format YY-MM-DD)
@@ -130,7 +124,6 @@ class Asset(object):
 
 
         Return :
-            - (float) 
             - (DataFrame) matrix of the key performance indicators for each date 
         """
 
@@ -145,9 +138,13 @@ class Asset(object):
         # calculate the daily simple return
         perfMat['RateReturn'] = perfMat['Adj Close'] / perfMat['Adj Close'].shift(1) - 1
 
-
+        # calculate the elapsed time in years
         perfMat['Time Delta'] = (perfMat.index.values - perfMat.index.values[0]) / np.timedelta64(1, 'D') / 365
+
+        #
         perfMat['% Return'] = perfMat['Adj Close'] / perfMat[0:]['Adj Close'].values[0]
+
+        # calculate the annual return
         perfMat['Annual Return'] = perfMat['% Return'] ** (1 / perfMat['Time Delta']) - 1
 
 
@@ -169,22 +166,28 @@ class Asset(object):
         """
         Calculates the asset performance vector composed of the key performance indicators for the last valid trading 
         day :
-            - Open, High, Low, Close and volume
+            - Open, High, Low, Close, Adj Close and volume
+            - Acquistion value of the asset
             - Market value of the asset
             - Estimated profit of the asset
             - % Estimated profit of the asset
+            
+        Args :
+            - None
 
     
         Return :
-            - (DataFrame) matrix of the key performance indicators for the last trading day
+            - (DataFrame) (actually a one row dataFrame) indicators above based on the last trading day
         """
 
 
-
+        # get the last row of the performance matrix
         perfVector = self.perfMatrix.iloc[[-1]]
 
+        # extract the desired columns
         perfVector = perfVector[['Adj Close', 'Market', 'Est Profit', '% Est Profit','Annual Return']]
 
+        # add other indicators
         perfVector['Asset ID'] = self.assetID
         perfVector['Purchase date'] = self.purchaseDate
         perfVector['Purchase price'] = self.purchasePrice
@@ -192,15 +195,14 @@ class Asset(object):
         perfVector['Acquisition'] = self.volume * self.purchasePrice
 
 
+        # reorganize the sequence of the indicators
         perfVector = perfVector[['Asset ID','Purchase date','Purchase price','Volume','Acquisition','Adj Close', 'Market',
                                  'Est Profit', '% Est Profit', 'Annual Return']]
-
 
 
         return perfVector
 
 
-    #------------- Sale performance ---------------------------------------------------------------------------------
 
 
     def calcSaleProfit(self):
@@ -224,8 +226,19 @@ class Asset(object):
 
 
     def setAssetData(self):
+        """
+        This method is called after the asset is created to set the perfMatrix and the perfVector 
+        
+        Args :
+            - None
+
+        Return :
+            - None
+        """
 
 
+        # determin the end date of the oerformance matrix based on the status of the asset. If the asset has already been
+        # sold then the end date will correspond to the sale date, inf not then it is the last trading day
         if self.saleDate != None:
 
             endDate = self.saleDate
@@ -235,104 +248,13 @@ class Asset(object):
             endDate = datetime.datetime.now().strftime("%Y-%m-%d")
 
 
+        # calculate the performance matrix
         self.perfMatrix = self.calcAssetPerformanceMatrix(self.purchaseDate,endDate)
 
-        self.annualReturn = self.perfMatrix[-1:]['Annual Return']
-
+        # calculate the performace vector
         self.perfVector = self.calcCurrentPerformanceVector()
 
+        # get the annual return from the perfmatrix for the last trading day
+        self.annualReturn = self.perfMatrix[-1:]['Annual Return']
 
 
-
-
-    #------------- Grafing ---------------------------------------------------------------------------------
-
-
-
-    def grafAsset(self,grafType='Adj Close'):
-
-        trace_high = go.Scatter(
-            x=self.perfMatrix.index,
-            y=self.perfMatrix[grafType],
-            name="AAPL High",
-            line=dict(color='#17BECF'),
-            opacity=0.8)
-
-        trace_low = go.Scatter(
-            x=self.perfMatrix.index,
-            y=self.perfMatrix[grafType],
-            name="AAPL Low",
-            line=dict(color='#7F7F7F'),
-            opacity=0.8)
-
-        data = [trace_high, trace_low]
-
-        layout = dict(
-            title='Time Series with Rangeslider',
-            xaxis=dict(
-                rangeselector=dict(
-                    buttons=list([
-                        dict(count=1,
-                             label='1m',
-                             step='month',
-                             stepmode='backward'),
-                        dict(count=6,
-                             label='6m',
-                             step='month',
-                             stepmode='backward'),
-                        dict(step='all')
-                    ])
-                ),
-                rangeslider=dict(),
-                type='date'
-            )
-        )
-
-        fig = dict(data=data, layout=layout)
-        iplot(fig, filename="Time Series with Rangeslider")
-
-
-
-    def getGrafTraces(self,grafType='Adj Close'):
-
-        trace_high = go.Scatter(
-            x=self.perfMatrix.index,
-            y=self.perfMatrix[grafType],
-            name="AAPL High",
-            line=dict(color='#17BECF'),
-            opacity=0.8)
-
-        trace_low = go.Scatter(
-            x=self.perfMatrix.index,
-            y=self.perfMatrix[grafType],
-            name="AAPL Low",
-            line=dict(color='#7F7F7F'),
-            opacity=0.8)
-
-        data = [trace_high, trace_low]
-
-        layout = dict(
-            title='Time Series with Rangeslider',
-            xaxis=dict(
-                rangeselector=dict(
-                    buttons=list([
-                        dict(count=1,
-                             label='1m',
-                             step='month',
-                             stepmode='backward'),
-                        dict(count=6,
-                             label='6m',
-                             step='month',
-                             stepmode='backward'),
-                        dict(step='all')
-                    ])
-                ),
-                rangeslider=dict(),
-                type='date'
-            )
-        )
-
-        fig = dict(data=data, layout=layout)
-
-
-        return fig

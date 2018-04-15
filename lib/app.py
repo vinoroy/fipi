@@ -8,6 +8,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 from dash.dependencies import Input, Output
 import plotly.figure_factory as ff
+import dash_auth
 
 import plotly.graph_objs as go
 
@@ -32,12 +33,21 @@ def generate_assetMenu(myP):
 
 
 
-app = dash.Dash()
+# Keep this out of source code repository - save in a file or a database
+VALID_USERNAME_PASSWORD_PAIRS = [
+    ['hello', 'world']
+]
+
+app = dash.Dash('auth')
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
 
 
 app.css.append_css({'external_url': 'https://codepen.io/chriddyp/pen/bWLwgP.css'})
 
-myP = Portfolio('/Users/vincentroy/Documents/fipi2/data/fiDB.json')
+myP = Portfolio('/Users/vincentroy/Documents/fipi/data/reg.json')
 
 assetMenuList = generate_assetMenu(myP)
 

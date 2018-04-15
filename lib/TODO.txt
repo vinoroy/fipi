@@ -1,0 +1,11 @@
+TODO
+----
+
+
+ - document code
+ - add a summary for the % est profit of the portfolio
+ - add titles to the grafs
+ - develop the code for realEstate asset
+ - create assets
+
+

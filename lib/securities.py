@@ -2,7 +2,7 @@
 """
 @author: Vincent Roy [D]
 
-This module implements the abstract and concrete securities classes
+This module implements the concrete securities classes
 
 """
 
@@ -61,16 +61,17 @@ class CommonStock(Equity):
 
     def getHistoricalPrice(self, startDate, endDate):
         """
-        Gets the historical price at a given date for a unit of the asset. 
+        Gets the historical prices (open, low, high, close, adj close and volume) between a set of dates 
 
         Args :
         - startDate : (string) start date of the extraction (format YY-MM-DD)
         - endDate : (string) end date of the extraction (format YY-MM-DD)
 
         Return :
-            - (Dataframe) 
+            - (Dataframe) open, low, high, close, adj close and volume matrix between a set of dates 
         """
 
+        # try to get the values from the yahoo finance api
         try :
             histValues = pdr.DataReader(self.ticker, data_source='yahoo', start=startDate,end=endDate)
 
