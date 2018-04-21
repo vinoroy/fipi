@@ -131,7 +131,7 @@ class Asset(object):
         perfMat = self.getHistoricalPrice(startDate, endDate)
 
         # calculate the performance values for each time stamp
-        perfMat['Market'] = perfMat[['Adj Close']] * self.volume
+        perfMat['Market'] = perfMat[['Close']] * self.volume
         perfMat['Est Profit'] = perfMat['Market'] - self.calcAcquistionValue()
         perfMat['% Est Profit'] = perfMat['Est Profit'] / self.calcAcquistionValue() * 100
 
@@ -185,7 +185,7 @@ class Asset(object):
         perfVector = self.perfMatrix.iloc[[-1]]
 
         # extract the desired columns
-        perfVector = perfVector[['Adj Close', 'Market', 'Est Profit', '% Est Profit','Annual Return']]
+        perfVector = perfVector[['Close', 'Market', 'Est Profit', '% Est Profit','Annual Return']]
 
         # add other indicators
         perfVector['Asset ID'] = self.assetID
@@ -196,7 +196,7 @@ class Asset(object):
 
 
         # reorganize the sequence of the indicators
-        perfVector = perfVector[['Asset ID','Purchase date','Purchase price','Volume','Acquisition','Adj Close', 'Market',
+        perfVector = perfVector[['Asset ID','Purchase date','Purchase price','Volume','Acquisition','Close', 'Market',
                                  'Est Profit', '% Est Profit', 'Annual Return']]
 
 

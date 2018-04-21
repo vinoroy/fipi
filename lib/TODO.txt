@@ -1,11 +1,16 @@
 TODO
 ----
 
-
+P1
+---
  - document code
+ - add the possibility to switch between portfolios
  - add a summary for the % est profit of the portfolio
  - add titles to the grafs
- - develop the code for realEstate asset
  - create assets
 
+
+P2
+---
+- develop the code for realEstate asset
 

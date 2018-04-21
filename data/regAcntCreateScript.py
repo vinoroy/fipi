@@ -73,7 +73,7 @@ db.insert({'assetID': 'Rogers',
 # insert BCE
 db.insert({'assetID': 'BCE',
            'assetType':'COMMON',
-           'purchaseDate': '2012-01-01',
+           'purchaseDate': '1997-12-12',
            'purchasePrice':2.858,
            'volume':179,
            'saleDate':None,

@@ -107,7 +107,7 @@ class Portfolio(object):
         """
 
 
-        return ['Acquisition', 'Adj Close', 'Market','Est Profit', '% Est Profit']
+        return ['Acquisition', 'Close', 'Market','Est Profit', '% Est Profit']
 
 
 
@@ -146,7 +146,7 @@ class Portfolio(object):
         # create an empty dataframe with the column headings (must create a dummy row)
         summary = pd.DataFrame(
             [['Dummy', '00-00-00', np.nan, np.nan,np.nan ,np.nan, np.nan, np.nan, np.nan, np.nan]],
-            columns=['Asset ID', 'Purchase date', 'Purchase price', 'Volume','Acquisition', 'Adj Close', 'Market',
+            columns=['Asset ID', 'Purchase date', 'Purchase price', 'Volume','Acquisition', 'Close', 'Market',
                      'Est Profit', '% Est Profit', 'Annual Return'])
 
         # add the perfprmance vector of each asset to the newly created dataframe
@@ -162,7 +162,7 @@ class Portfolio(object):
 
         # create a dataframe with the sum of some of the performace indicators
         total = pd.DataFrame([['Total', '', '', '', summary['Acquisition'].sum(), '', summary['Market'].sum(), summary['Est Profit'].sum(), '', '']],
-                            columns=['Asset ID', 'Purchase date', 'Purchase price', 'Volume', 'Acquisition', 'Adj Close', 'Market',
+                            columns=['Asset ID', 'Purchase date', 'Purchase price', 'Volume', 'Acquisition', 'Close', 'Market',
                                      'Est Profit', '% Est Profit', 'Annual Return'])
 
         # add the sum dataframe to the summary table

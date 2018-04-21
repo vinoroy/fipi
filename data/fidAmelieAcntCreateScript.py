@@ -1,20 +1,169 @@
 from tinydb import TinyDB, Query
 import pandas as pd
 
-db = TinyDB('fiDB.json')
+db = TinyDB('fidAmelie.json')
 db.purge()
 
 
-# insert IBM stock
-db.insert({'assetID': 'IBM',
+# insert Scotia Bank
+db.insert({'assetID': 'Scotia',
            'assetType':'COMMON',
-           'purchaseDate': '2012-01-01',
-           'purchasePrice':156.5,
-           'volume':1000,
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':82.81,
+           'volume':60,
            'saleDate':None,
            'salePrice':None,
            'priceFeedType':'YAHOO',
-           'priceFeedRef':'IBM',
+           'priceFeedRef':'BNS.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+
+# insert Royal Bank first purchase
+db.insert({'assetID': 'Royal-1',
+           'assetType':'COMMON',
+           'purchaseDate': '2014-09-29',
+           'purchasePrice':81.1,
+           'volume':60,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'RY.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+# insert Royal Bank second purchase
+db.insert({'assetID': 'Royal-2',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':101.32,
+           'volume':50,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'RY.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+
+# insert TD
+db.insert({'assetID': 'TD',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':72.75,
+           'volume':70,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'TD.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+# insert Enbridge
+db.insert({'assetID': 'Enbridge',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':49.03,
+           'volume':100,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'ENB.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+
+# insert Fortis
+db.insert({'assetID': 'Fortis',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':47.305,
+           'volume':105,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'FTS.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+# insert HydroOne
+db.insert({'assetID': 'HydroOne',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':22.41,
+           'volume':225,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'H.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+
+# insert Canadian Tire
+db.insert({'assetID': 'CanadianTire',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':158.38,
+           'volume':30,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'CTC-A.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+# insert CP
+db.insert({'assetID': 'CP',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':224.42,
+           'volume':20,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'CP.TO',
+           'debtFeedType':None,
+           'debtFeedRef':None,
+           'percentOwnership':1,
+           'thresholds':[]})
+
+
+
+# insert Pembina Pipe Line
+db.insert({'assetID': 'Pembina',
+           'assetType':'COMMON',
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':41.63,
+           'volume':121,
+           'saleDate':None,
+           'salePrice':None,
+           'priceFeedType':'YAHOO',
+           'priceFeedRef':'PPL.TO',
            'debtFeedType':None,
            'debtFeedRef':None,
            'percentOwnership':1,
@@ -24,9 +173,9 @@ db.insert({'assetID': 'IBM',
 # insert Telus
 db.insert({'assetID': 'Telus',
            'assetType':'COMMON',
-           'purchaseDate': '2016-01-01',
-           'purchasePrice':34.8,
-           'volume':1000,
+           'purchaseDate': '2017-10-27',
+           'purchasePrice':46.71,
+           'volume':135,
            'saleDate':None,
            'salePrice':None,
            'priceFeedType':'YAHOO',
@@ -36,44 +185,6 @@ db.insert({'assetID': 'Telus',
            'percentOwnership':1,
            'thresholds':[]})
 
-
-
-# insert Apple
-db.insert({'assetID': 'Apple',
-           'assetType':'COMMON',
-           'purchaseDate': '2009-12-01',
-           'purchasePrice':30.2,
-           'volume':1000,
-           'saleDate':None,
-           'salePrice':None,
-           'priceFeedType':'YAHOO',
-           'priceFeedRef':'AAPL',
-           'debtFeedType':None,
-           'debtFeedRef':None,
-           'percentOwnership':1,
-           'thresholds':[]})
-
-
-
-
-# AAPL dec 1 2009 30.10
-
-
-
-# insert 1748 Des Cassandres asset
-# db.insert({'assetID': '1748',
-#            'assetType':'REAL',
-#            'purchaseDate': '2008-08-01',
-#            'purchasePrice':375000,
-#            'volume':1,
-#            'saleDate':None,
-#            'salePrice':None,
-#            'priceFeedType':'ARCHIVED',
-#            'priceFeedRef':'/Users/vincentroy/Documents/fipi/data/1748market.csv',
-#            'debtFeedType':'ARCHIVED',
-#            'debtFeedRef':'1748mortgage.csv',
-#            'percentOwnership':0.5,
-#            'thresholds':[]})
 
 
 allAssets = db.all()
